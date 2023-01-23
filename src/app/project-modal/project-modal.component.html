@@ -1,0 +1,63 @@
+<div class="modal-header bg-info" style="backdrop-filter : blur(15px);">
+            <h4 class="modal-title">Market8 HUB Listing Form</h4>
+            <button type="button" ngbAutofocus class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+</div>
+<div class="modal-body">
+            <div class="container">
+                <div class="form-group">
+                  <label for="username">Project name</label><label style="color: red;"> *</label>
+                  <input type="text" [(ngModel)]="project.name" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">Project link (https://market8.club/hub/{{project.pathname}})</label><label style="color: red;"> *</label>
+                    <input type="text" [readonly]="toModify" (focusout)="focusOut()" [(ngModel)]="project.pathname" class="form-control" />
+                    <label *ngIf="pathExist" style="color: red;">This project link is taken</label>
+                    <label style="color: red;">{{ '{' }} , {{ '}' }} , | , \ , ^ , ~ , [ , ] , ` and SPACE are not allowed</label>
+                    
+                </div>
+                <div class="form-group">
+                    <label for="desc">Description</label><label style="color: red;"> *</label>
+                    <textarea class="form-control" [(ngModel)]="project.description" id="desc" rows="3"></textarea>
+                </div>
+        
+                <div class="form-group">
+                    <label for="username">Project picture</label><label style="color: red;"> *</label>
+                    <input type="text" [(ngModel)]="project.profilepiclink" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">Project cover</label><label style="color: red;"> *</label>
+                    <input type="text" [(ngModel)]="project.profilecoverlink" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">Twitter link</label>
+                    <input type="text" [(ngModel)]="project.twitterlink" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">Discord server</label>
+                    <input type="text" [(ngModel)]="project.discordlink" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">Magic Eden link</label>
+                    <input type="text" [(ngModel)]="project.melink" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">First verified creator address</label>
+                    <input type="text" [(ngModel)]="project.fvcadd" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="username">Collection address</label>
+                    <input type="text" [(ngModel)]="project.colladd" class="form-control" />
+                </div>
+            </div>
+</div>
+<div *ngIf="project.name.length &&
+            project.pathname.length &&
+            project.description.length &&
+            project.profilepiclink.length &&
+            project.profilecoverlink.length &&
+            !pathExist && !notValidLink"  
+        class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="submitClicked();">Submit</button>
+</div>

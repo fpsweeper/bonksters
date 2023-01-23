@@ -1,0 +1,80 @@
+/* You can add global styles to this file, and also import other style files */
+
+body:not(.dark-mode) {
+  transition: all 2s linear;
+}
+
+body.modal-open{
+  width:100% !important;
+  padding-right:0 !important;
+  overflow-y:scroll !important;
+  position:fixed !important;
+}
+
+body.modal-open main{
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
+
+body.modal-open nav{
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
+
+body.modal-open footer{
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
+
+body.dark-mode {
+    color: #dfe6e9;
+    background-color: black;
+    .section {
+      .shape-style-1 {
+        .shape-primary{
+          background: linear-gradient(87deg, #172b4d 0, #1a174d 100%)!important
+        }
+      }
+    }
+
+    polygon {
+      fill: black;
+    }
+
+    .section-mode{
+        background-color: black;
+      }    
+
+    h1 {
+      color: white;
+    }
+    .footer
+    {
+      background-color: black;
+    }
+    
+    
+    h4 {
+      color: white;
+    }
+  }
+
+body.light-mode {
+    background-color: transparent;
+    color: #2d3436;
+
+    polygon {
+      fill: white;
+    }
+  }
+
+

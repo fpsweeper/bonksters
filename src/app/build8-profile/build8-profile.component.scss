@@ -1,0 +1,262 @@
+table, tr, td {
+    border: none;
+}
+
+.cr {
+    background-color: rgb(114, 1, 206);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+.card1 {
+    background-color: rgb(114, 1, 206);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+                rgba(0, 0, 0, 0.12) 0px -12px 30px, 
+                rgba(0, 0, 0, 0.12) 0px 4px 6px, 
+                rgba(0, 0, 0, 0.17) 0px 12px 13px, 
+                rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    position: relative;
+    overflow: hidden;
+    display: block;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1em;
+  }
+
+  p {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  span {
+    position: absolute;
+    border-radius: 100vmax;
+  }
+
+  .top {
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      transparent 50%,
+      rgba(57, 255, 77, 0.5),
+      rgb(57, 255, 77)
+    );
+  }
+
+  .bottom {
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      rgb(57, 255, 77),
+      rgba(57, 255, 77, 0.5),
+      transparent 50%
+    );
+  }
+
+  .right {
+    top: 0;
+    right: 0;
+    width: 3px;
+    height: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 30%,
+      rgba(57, 255, 77, 0.5),
+      rgb(57, 255, 77)
+    );
+  }
+
+  .left {
+    left: 0;
+    bottom: 0;
+    width: 3px;
+    height: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(57, 255, 77),
+      rgba(57, 255, 77, 0.5),
+      transparent 70%
+    );
+  }
+
+  .top {
+    animation: animateTop 3s ease-in-out infinite;
+  }
+
+  .bottom {
+    animation: animateBottom 3s ease-in-out infinite;
+  }
+
+  .right {
+    animation: animateRight 3s linear infinite;
+  }
+
+  .left {
+    animation: animateLeft 3s ease-in-out infinite;
+  }
+
+  @keyframes animateTop {
+    25% {
+      width: 100%;
+      opacity: 1;
+    }
+
+    30%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes animateBottom {
+    0%,
+    50% {
+      opacity: 0;
+      width: 0;
+    }
+
+    75% {
+      opacity: 1;
+      width: 100%;
+    }
+
+    76%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes animateRight {
+    0%,
+    25% {
+      opacity: 0;
+      height: 0;
+    }
+
+    50% {
+      opacity: 1;
+      height: 100%;
+    }
+
+    55%,
+    100% {
+      height: 100%;
+      opacity: 0;
+    }
+  }
+
+  @keyframes animateLeft {
+    0%,
+    75% {
+      opacity: 0;
+      bottom: 0;
+      height: 0;
+    }
+
+    100% {
+      opacity: 1;
+      height: 100%;
+    }
+  }
+
+  * {
+    font-family: 'Manrope';
+  }
+
+.profile-label {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+
+.loader {
+  position: absolute;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  perspective: 800px;
+}
+
+.inner {
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;  
+}
+
+.inner.one {
+  left: 0%;
+  top: 0%;
+  animation: rotate-one 1s linear infinite;
+  border-bottom: 3px solid #EFEFFA;
+}
+
+.inner.two {
+  right: 0%;
+  top: 0%;
+  animation: rotate-two 1s linear infinite;
+  border-right: 3px solid #EFEFFA;
+}
+
+.inner.three {
+  right: 0%;
+  bottom: 0%;
+  animation: rotate-three 1s linear infinite;
+  border-top: 3px solid #EFEFFA;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
+}
+
+.list-project-btn {
+  background-color: transparent;
+  border-radius: 2em;
+  border-width: 2px;
+  border-color: #7a7acb;
+  color: white;
+}
+
+.list-project-btn:hover {
+  background-color: #2b2b81;
+  box-shadow: 0px 0px 40px 5px rgb(114, 1, 206);
+}
+
+.btnhv:hover {
+  color: orange;
+  cursor: pointer;
+}
+
+.btnhv {
+  color: white;
+}

@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a [routerLink]="['/home']">
+        <img src="./assets/img/brand/logo.png" width="70px" height="50px">
+    </a>
+    <div class="col-md-1"></div>
+    <button class="navbar-toggler" type="button"
+            (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+  
+    <div class="collapse navbar-collapse"
+         [ngClass]="{ 'show': navbarOpen }">
+      <ul class="navbar-nav mr-auto" style="width: 100%;">
+        <li class="nav-item">
+            <a class="nav-link no-caret" [routerLink]="['/shop']">
+                <i class="fa fa-shopping-cart fa-lg" style="color: white;"></i>
+                <span class="nav-link-inner--text" style="color: white;">Shop</span>
+            </a> 
+        </li>
+        <li class="nav-item">
+            <a class="nav-link no-caret" [routerLink]="['/hub']">
+                <i class="fa fa-codepen fa-lg" style="color: white;"></i>
+                <span class="nav-link-inner--text" style="color: white;">Hub</span>
+            </a>
+        </li>
+ 
+        <li class="nav-item">
+            <div ngbDropdown class="d-inline-block">
+                <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle style="border-radius: 5em; box-shadow: 0px 0px 40px 5px rgb(114, 1, 206);">
+                  <i *ngIf="!connected" class="fa fa-user-circle fa-xl"></i>
+                  <a *ngIf="!connected" class="nav-link-inner--text">Profile</a>
+                  <img *ngIf="connected" class="rounded-circle img-center img-fluid shadow shadow-lg--hover" src="{{profile.img}}" style="width: 32px; display: inline-block; margin-right: 10px;">
+                  <a *ngIf="connected" class="nav-link-inner--text" style="width: 10px; color: white;">{{profile.realwalladd}}</a>
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                  <button ngbDropdownItem *ngIf="!connected" (click) = "connect()">Connect Wallet</button>
+                  <button ngbDropdownItem *ngIf="connected" [routerLink]="['/market8profile']">Profile</button>
+                  <button ngbDropdownItem *ngIf="connected" [routerLink]="['/home']"  (click) = "disconnect()">Disconnect</button>
+                </div>
+            </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
