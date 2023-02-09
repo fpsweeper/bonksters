@@ -18,16 +18,16 @@ import { HomeModule } from './home/home.module';
 import { LoginComponent } from './login/login.component';
 import { ShopComponent } from './shop/shop.component';
 import { SoftwareComponent } from './software/software.component';
-import { Build8ProfileComponent } from './build8-profile/build8-profile.component';
 import { environment as env } from '../environments/environment';
 
 import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { Navbar2Component } from './shared/navbar2/navbar2.component';
-
-
 import { SolWalletsModule } from 'angular-sol-wallets';
 import { ProjectModalComponent } from './project-modal/project-modal.component';
 import { DeleteModalComponent } from './delete-modal/delete-modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { CustomSnackComponent } from './custom-snack/custom-snack.component';
 
 @NgModule({
   declarations: [
@@ -40,12 +40,13 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     LoginComponent,
     ShopComponent,
     SoftwareComponent,
-    Build8ProfileComponent,
     Navbar2Component,
     ProjectModalComponent,
-    DeleteModalComponent
+    DeleteModalComponent,
+    CustomSnackComponent
   ],
   imports: [
+    MatSnackBarModule,
     SolWalletsModule,
     BrowserModule,
     NgbModule,
@@ -58,7 +59,8 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
       httpInterceptor: {
         ...env.httpInterceptor,
       },
-    })
+    }),
+    BrowserAnimationsModule
   ],
   /*providers: [
     {

@@ -35,7 +35,7 @@
         </a>
 
       </ul> -->
-      <!--<ul class="navbar-nav align-items-lg-center ml-lg-auto">
+      <ul class="navbar-nav align-items-lg-center ml-lg-auto">
 
         <div ngbDropdown class="d-inline-block">
           <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle style="border-radius: 5em; box-shadow: 0px 0px 40px 5px rgb(114, 1, 206);">
@@ -46,12 +46,12 @@
           </button>
           <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
             <button ngbDropdownItem *ngIf="!connected" (click) = "connect()">Connect Wallet</button>
-            <button ngbDropdownItem *ngIf="connected" [routerLink]="['/market8profile']">Profile</button>
+            <button *ngIf="connected" ngbDropdownItem [routerLink]="['/profile']">Profile</button>
             <button ngbDropdownItem *ngIf="connected" [routerLink]="['/home']"  (click) = "disconnect()">Disconnect</button>
           </div>
         </div>
         
-      </ul>-->
+      </ul>
     </div>
   </div>
 </nav>

@@ -1,17 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { Location, PopStateEvent } from '@angular/common';
-import { PublicKey } from '@solana/web3.js';
-
+import { Keypair, PublicKey } from '@solana/web3.js';
+const { rpc } = require ('../../../config.json')
 import { SolWalletsService, Wallet } from "angular-sol-wallets" ;
-import { HttpClient } from '@angular/common/http';
-
 import {PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import {  SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-import { SolanaJSONRPCError } from '@solana/web3.js';
-
-import { SendTransactionOptions, WalletAdapter, WalletName } from '@solana/wallet-adapter-base';
-import e from 'express';
+import {ProtocolOptions, SocialProtocol, User} from '@spling/social-protocol'
 
 declare global {
     interface Window {
@@ -27,6 +22,7 @@ declare global {
     styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+    provider
     _disconnected
     _accountChanged
     public isCollapsed = true;
@@ -34,6 +30,8 @@ export class NavbarComponent implements OnInit {
     private yScrollStack: number[] = [];
     connected = false
     walletaddress = ''
+    userFindLoading = false
+    user = null
 
     profile = {
         name: 'fpsweeper',
@@ -53,8 +51,6 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit() {
-
-        
       this.router.events.subscribe((event) => {
         this.isCollapsed = true;
         if (event instanceof NavigationStart) {
@@ -106,6 +102,15 @@ export class NavbarComponent implements OnInit {
 
     }
 
+    fromPhantomStringToWallet(seckey){
+        const bs58 = require('bs58');
+        const b = bs58.decode(seckey);
+        const j = new Uint8Array(b.buffer, b.byteOffset, b.byteLength / Uint8Array.BYTES_PER_ELEMENT);
+        var from = Keypair.fromSeed(j.slice(0,32))
+  
+        return from
+    }
+
     isHome() {
         var titlee = this.location.prepareExternalUrl(this.location.path());
 
@@ -127,101 +132,27 @@ export class NavbarComponent implements OnInit {
         }
     }
 
-    /*connect(){
-        this.connected = true
-    }*/
 
     async connect(){
-        let provider: any
-        provider = this.getProvider(); // see "Detecting the Provider"
+
+        this.provider = this.getProvider(); // see "Detecting the Provider"
 
         try {
             
-            const resp = await provider.connect();
+            const resp = await this.provider.connect();
             console.log(resp.publicKey.toString());
             
             this.profile.walletaddress = resp.publicKey.toString()
             this.profile.realwalladd = resp.publicKey.toString().substring(0, 7) + ' ... ' + 
                             resp.publicKey.toString().substring(resp.publicKey.toString().length - 3, resp.publicKey.toString().length )
             this.connected = true    
-            
+
             // To Do -> Get all socials and wallets from database
             sessionStorage.setItem('walletaddress', this.profile.walletaddress)
-
-            const response = await fetch("https://market8.club:9090/checkUser/" + this.profile.walletaddress, {
-                method: 'GET',
-                headers: {'Content-Type':'application/json'}
-            });
-
-            if (!response.ok)
-            {
-                console.error("Error");
-            }
-            else{
-                var res0 = await response.text();
-                if(res0 === '')
-                {
-                    console.log('Saving user !!')
-                    this.addUser({
-                        "wallet": this.profile.walletaddress
-                    })
-                }
-                else{
-                    const res = JSON.parse(res0.valueOf())
-                    if(res.dcuser != null)
-                        this.profile.img = res.dcimage
-                    else
-                        if(res.twpic != null)
-                            this.profile.img = res.twpic
-                }
-            }
-
         } catch (err) {
-            // { code: 4001, message: 'User rejected the request.' }
+
         }
 
-
-        /*this.solWalletS.connect().then(async wallet => {
-            console.log("Wallet connected successfully with this address 1:", wallet.publicKey.toJSON());
-            this.walletaddress = wallet.publicKey.toJSON()
-            this.profile.walletaddress = wallet.publicKey.toJSON()
-            this.profile.realwalladd = wallet.publicKey.toJSON().substring(0, 7) + ' ... ' + 
-                                       wallet.publicKey.toJSON().substring(wallet.publicKey.toJSON().length - 3, wallet.publicKey.toJSON().length )
-            this.connected = true    
-            
-            // To Do -> Get all socials and wallets from database
-            sessionStorage.setItem('walletaddress', this.profile.walletaddress)
-
-            const response = await fetch("https://market8.club:9090/checkUser/" + this.profile.walletaddress, {
-                method: 'GET',
-                headers: {'Content-Type':'application/json'}
-            });
-
-            if (!response.ok)
-            {
-                console.error("Error");
-            }
-            else{
-                var res0 = await response.text();
-                if(res0 === '')
-                {
-                    console.log('Saving user !!')
-                    this.addUser({
-                        "wallet": this.profile.walletaddress
-                    })
-                }
-                else{
-                    const res = JSON.parse(res0.valueOf())
-                    if(res.dcuser != null)
-                        this.profile.img = res.dcimage
-                    else
-                        if(res.twpic != null)
-                            this.profile.img = res.twpic
-                }
-            }
-        }).catch(err => {
-            console.log("Error connecting wallet", err );
-        }) */
     }
 
     async disconnect(){
@@ -278,19 +209,28 @@ export class NavbarComponent implements OnInit {
         window.open('https://phantom.app/', '_blank');
     };
 
-    /*getProvider = async () => {
+    async createUser(){
+        const options = {
+            rpcUrl: rpc,
+            useIndexer: true
+        } as ProtocolOptions
+            const prov = this.getProvider()
+            const resp = await prov.connect();
+            console.log(prov, ' ;;;;;;;;;;;;;;;;;;;;;')
+            const socialProtocol: SocialProtocol = await new SocialProtocol(prov, null, options).init() 
+            //await socialProtocol.prepareWallet()
 
-        if (window.phantom?.solana?.isPhantom || window.solana?.isPhantom) {
-            if(window.phantom?.solana?.isPhantom)
-            {
-                return window.phantom?.solana;
+            let user: User | null = await socialProtocol.getUserByPublicKey(new PublicKey(resp.publicKey.toString())) 
+
+            if(user == null){
+                console.log('???????????????????????????????? !!!!!!!')
+                const user2: User | null = await socialProtocol.createUser("FpSweeper", null, null) 
+                console.log(user2, ' ************************')
+            }else{
+                console.log(user, ' YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
             }
-            else
-                return window.solana;
-        }
-        else {
-          document.write('Install https://www.phantom.app/');
-        } 
-    }; */
-    
+            console.log('???????????????????????????????????????????')
+            //console.log(user, ' ***************************************')
+            
+    }
 }

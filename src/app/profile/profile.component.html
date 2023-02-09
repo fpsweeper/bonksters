@@ -1,75 +1,87 @@
 <main class="profile-page">
-  <section class="section-profile-cover section-shaped my-0">
-    <!-- Circles background -->
-    <div class="shape shape-style-1 shape-primary alpha-4">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <!-- SVG separator -->
-    <div class="separator separator-bottom separator-skew">
-      <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
-      </svg>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container">
-      <div class="card card-profile shadow mt--300">
-        <div class="px-4">
-          <div class="row justify-content-center">
-            <div class="col-lg-3 order-lg-2">
-              <div class="card-profile-image">
-                <a href="javascript:void(0)">
-                  <img src="./assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
-                </a>
-              </div>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <div *ngIf="userFindLoading" class="loader" style="top: 200px;">
+    <div class="inner one"></div>
+    <div class="inner two"></div>
+    <div class="inner three"></div>
+  </div>
+
+
+  <div class="position-relative" style="margin-top: 100px;">
+    <section class="section section-sm section-shaped pb-300">
+      <div class="shape shape-style-1 shape-dark">
+      </div>
+
+      <div class="container" style=" margin-bottom: 10px;">
+        <div class="container d-flex" style="padding-top: 60px; border: 1px #f47407 solid; padding: 0; border-radius: 2em;">
+          <div class="col-lg-12" style="text-align: center; margin-top: 20px; padding: 0;">
+            <div class="col-lg-12" style="text-align: left;">
+              <label for="username" style="font-family: myFirstFont; color: white;">Profile Picture</label><label style="color: red;"> *</label>
+              <button *ngIf="chargingFileText === 'Charged'" type="button" class="btn danger" id="dropdownBasic1" 
+              style="margin-left: 10px; display: inline-block;"
+              (click)="clearProfilePic()">
+                <a class="nav-link-inner--text" style="font-family: myFirstFont;">Clear File</a>
+              </button>
+
+              <label [ngClass]="chargingFileText != 'Charged' ? 'socials' : 'chargedbtn'" class="btn" style="font-family: myFirstFont; color: white; display: block; margin-top: 5px;">
+                <input [disabled]="chargingFileText === 'Charged'" type="file" style="display: none;" (change)="handleFileInput($event.target.files)" accept="image/*"/>
+                {{chargingFileText}}
+              </label>
             </div>
-            <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
-              <div class="card-profile-actions py-4 mt-lg-0">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info mr-4">Connect</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-default float-right">Message</a>
-              </div>
+            <div class="col-lg-12" style="text-align: left;">
+              <label for="username" style="font-family: myFirstFont; color: white;">Username</label><label style="color: red;"> *</label>
+              <input type="text" [(ngModel)] = "username" class="form-control" style="font-family: myFirstFont; color: black;"/>
             </div>
-            <div class="col-lg-4 order-lg-1">
-              <div class="card-profile-stats d-flex justify-content-center">
-                <div>
-                  <span class="heading">22</span>
-                  <span class="description">Friends</span>
-                </div>
-                <div>
-                  <span class="heading">10</span>
-                  <span class="description">Photos</span>
-                </div>
-                <div>
-                  <span class="heading">89</span>
-                  <span class="description">Comments</span>
-                </div>
-              </div>
+            <div class="col-lg-12" style="text-align: left;">
+              <label for="username" style="font-family: myFirstFont; color: white;">Description</label><label style="color: red;"> *</label>
+              <textarea [(ngModel)]="description" class="form-control" id="desc" rows="3" style="font-family: myFirstFont; color: black;"></textarea>
             </div>
-          </div>
-          <div class="text-center mt-5">
-            <h3>Jessica Jones
-              <span class="font-weight-light">, 27</span>
-            </h3>
-            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Bucharest, Romania</div>
-            <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer</div>
-            <div><i class="ni education_hat mr-2"></i>University of Computer Science</div>
-          </div>
-          <div class="mt-5 py-5 border-top text-center">
-            <div class="row justify-content-center">
-              <div class="col-lg-9">
-                <p>An artist of considerable range, Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music, giving it a warm, intimate feel with a solid groove structure. An artist of considerable range.</p>
-                <a href="javascript:void(0)">Show more</a>
+
+            <button type="button" class="btn socials" id="dropdownBasic1" style="margin-top: 20px; margin-bottom: 20px;" (click)="createUserClicked()">
+              <i *ngIf="!createLoading" class="fa fa-user-circle fa-xl"></i>
+              <div *ngIf="createLoading" class="spinner-border spinner-border-sm text-success" role="status" style="margin-right: 5px;">
+                <span class="sr-only">Loading...</span>
               </div>
-            </div>
+              <a class="nav-link-inner--text" style="font-family: myFirstFont; color: white;">Create Profile</a>
+            </button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+
+      <div class="col-lg-12" style="display: block;">
+        <div class="col-lg-3" style="display: inline-block"></div>
+        <div class="col-lg-6" style="display: inline-block; height: 100%;">
+          <div class="container d-flex" style="border: 1px #f47407 solid; padding: 0; border-radius: 2em; min-height: 300px;">
+            <div class="col-lg-12" style="text-align: center; padding: 0;">
+              <div class="col-lg-12 cover">
+                <div *ngIf="chargingFileText != 'Charged'" class="project-profile-pic" >
+                </div>
+                <div *ngIf="chargingFileText === 'Charged'" class="project-profile-pic" style="background-image: url({{userProfile.profileImg}});">
+                </div>
+              </div>
+
+              <div class="container d-flex" style="padding-top: 60px;">
+                <div class="col-lg-12" style="text-align: center;">
+                  <h1 class="display-3" style="color: white; font-family: myFirstFont; font-size: 18px;">
+                    {{username}}
+                  </h1>
+                </div>
+              </div>
+
+              <div class="container d-flex" style="padding-left: 100px; padding-right: 100px;">
+                <div class="col-lg-12 project-description">
+                    <h1 class="lead text-white" style="font-family: myFirstFont; font-size: 15px; text-align: center;">{{description}}</h1>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3" style="display: inline-block"></div>
+      </div>
+      
+    </section>
+  </div>
+
 </main>
+
