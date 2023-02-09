@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths":{
-      "crypto":["node_modules/crypto-js"],
+      "crypto":["node_modules/crypto-browserify"],
       "assert":["node_modules/assert"],
       "stream":["node_modules/stream-browserify"],
       "zlib":["node_modules/browserify-zlib"],
@@ -13,7 +13,6 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    //"module": "es2015",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -23,6 +22,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "strictPropertyInitialization": false,
+
+    "types": ["node"],
 
     "target": "es2020",
     "typeRoots": [

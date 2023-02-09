@@ -1,0 +1,14 @@
+:host {
+    display: flex;
+  }
+
+i {
+  right: 10px; 
+  position: absolute;
+  color: white;
+}
+
+i:hover {
+  color: black;
+  cursor: pointer;
+}

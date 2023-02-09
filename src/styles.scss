@@ -1,4 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: myFirstFont;
+  src: url('./assets/fonts/Purple\ Smile.ttf');
+}
+
+.custom-snackbar {
+  background: #ba4935;
+  border-radius: 2em;
+  color: white;
+  font-family: myFirstFont; 
+  top:0;
+}
 
 body:not(.dark-mode) {
   transition: all 2s linear;
@@ -78,3 +90,6 @@ body.light-mode {
   }
 
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

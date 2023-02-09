@@ -16,8 +16,6 @@ config.set({
     require('@angular-devkit/build-angular/plugins/karma'),
     new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
-    }),
-    new webpack.ProvidePlugin({
         process: 'process/browser',
     }),
   ],
