@@ -2,22 +2,28 @@ import { Component, OnInit, Inject, ViewEncapsulation  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {ProjectModalComponent} from '../project-modal/project-modal.component'
-import {ProtocolOptions, SocialProtocol, User} from '@spling/social-protocol'
-import { Keypair, PublicKey } from '@solana/web3.js';
+import { Keypair, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {CustomSnackComponent} from '../custom-snack/custom-snack.component'
 const { rpc } = require ('../../config.json')
-import { ConnectionStore, WalletStore } from "@danmt/wallet-adapter-angular";
+import { FormBuilder, FormControl } from '@angular/forms';
+import { concatMap, first, map } from 'rxjs/operators';
+import { WalletAdapterNetwork, WalletReadyState, WalletName  } from '@solana/wallet-adapter-base';
 import {
-  PhantomWalletAdapter
-} from "@solana/wallet-adapter-phantom";
-
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SlopeWalletAdapter,
+  SolflareWalletAdapter,
+  SolletWalletAdapter,
+  TorusWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
+import { ConnectionStore, WalletStore } from '@heavy-duty/wallet-adapter';
 
 declare global {
   interface Window {
-      phantom:any;
-      solflare:any;
-      solana:any;
+      phantom:any,
+      solflare:any,
+      solana:any,
       SolflareApp:any
   }
 }
@@ -32,6 +38,39 @@ declare var $: any;
 
 export class ProfileComponent implements OnInit {
 
+  
+  readonly connection$ = this._connectionStore.connection$;
+  readonly wallets$ = this._walletStore.wallets$;
+  readonly wallet$ = this._walletStore.wallet$;
+
+  wallet = this.wallet$.pipe(
+    map((wallet) => wallet?.adapter['_wallet'] || null)
+  );
+
+  readonly walletName$ = this.wallet$.pipe(
+    map((wallet) => wallet?.adapter.name || null)
+  );
+  readonly ready$ = this.wallet$.pipe(
+    map(
+      (wallet) =>
+        wallet &&
+        (wallet.adapter.readyState === WalletReadyState.Installed ||
+          wallet.adapter.readyState === WalletReadyState.Loadable)
+    )
+  );
+  readonly connected$ = this._walletStore.connected$;
+  readonly publicKey$ = this._walletStore.publicKey$;
+  lamports = 0;
+  recipient = '';
+  readonly form = this._formBuilder.group<{
+    recipient: FormControl<string | null>;
+    lamports: FormControl<number | null>;
+  }>({
+    recipient: this._formBuilder.control(null),
+    lamports: this._formBuilder.control(null),
+  });
+
+
   userFindLoading = false
   user = null
   fileToUpload: File | null = null;
@@ -44,21 +83,24 @@ export class ProfileComponent implements OnInit {
     profileImg : null
   }
 
-  constructor(private route: ActivatedRoute, private modalService: NgbModal, private _snackBar: MatSnackBar) { 
+  constructor(private route: ActivatedRoute, private modalService: NgbModal, private _snackBar: MatSnackBar,
+            private _connectionStore: ConnectionStore,
+            private _walletStore: WalletStore, private readonly _formBuilder: FormBuilder) { 
 
+              
     }
 
   ngOnInit(): void {
-    this.getUserByPubKey().then(res => {
-      this.user = res
-    })
 
-    /*this._hdConnectionStore.setEndpoint("https://api.mainnet.solana.com");
-    this._hdWalletStore.setAdapters([
-      new PhantomWalletAdapter()
-    ]);*/
-
-    
+    this._connectionStore.setEndpoint('http://api.mainnet.solana.com');
+    this._walletStore.setAdapters([
+      new PhantomWalletAdapter(),
+      new SlopeWalletAdapter(),
+      new SolflareWalletAdapter(),
+      new TorusWalletAdapter(),
+      new LedgerWalletAdapter(),
+      new SolletWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
+    ]);
   }
 
   showNotification(from, align, msg){
@@ -107,11 +149,11 @@ export class ProfileComponent implements OnInit {
       }
 
     }else{
-        if (window.solflare?.isSolflare || window.SolflareApp){
+        /*if (window.solflare?.isSolflare || window.SolflareApp){
             if(window.solflare?.isSolflare){
                 return window.solflare
             }
-        }
+        }*/
     }
   
     window.open('https://phantom.app/', '_blank');
@@ -131,23 +173,10 @@ export class ProfileComponent implements OnInit {
 
   }
 
-  getUserByPubKey(){
-    return new Promise(async (resolve, reject) => {
-      const { rpc } = require ('../../config.json')
-      console.log('Game starts ...')
-      this.userFindLoading =  true
-      const options = {
-          rpcUrl: rpc,
-          useIndexer: true
-      } as ProtocolOptions
-      const socialProtocol: SocialProtocol = await new SocialProtocol(Keypair.generate(), null, options).init() 
-      let user: User | null = await socialProtocol.getUserByPublicKey(new PublicKey(sessionStorage.getItem('walletaddress'))) 
-      this.userFindLoading =  false
-      resolve(user);
-    }) 
-  }
-
   async handleFileInput(files: FileList) {
+   
+    
+    //this._walletStore.connect().subscribe()
 
     //this._hdWalletStore.connect()
 
@@ -173,6 +202,7 @@ export class ProfileComponent implements OnInit {
       this.userProfile.profileImg = fileReader.result
     }
     this.chargingFileText= 'Charged'
+
   }
 
   clearProfilePic(){
@@ -186,9 +216,17 @@ export class ProfileComponent implements OnInit {
       this.openSnackBar2()
     else{
       this.createLoading = true
-      await this.createUser()
+      console.log('Creating user ...')
       this.createLoading = false
     }
+  }
+
+  onDisconnect() {
+    this._walletStore.disconnect().subscribe();
+  }
+
+  onSelectWallet(walletName: WalletName) {
+    this._walletStore.selectWallet(walletName);
   }
 
   openSnackBar(message: string, action: string) {
@@ -243,33 +281,15 @@ export class ProfileComponent implements OnInit {
     
   }*/
 
- 
-  async createUser(){
-    let imgFile = {
-      base64: this.userProfile.profileImg,
-      size: this.fileToUpload.size,
-      type: this.fileToUpload.type,
-    };
+  getWalletFromObservable() {
+    return new Promise(resolve=>{
 
-    const options = {
-        rpcUrl: rpc,
-        useIndexer: true
-    } as ProtocolOptions
-        const prov = this.getProvider()
-        const resp = await prov.connect();
-        const socialProtocol: SocialProtocol = await new SocialProtocol(prov, null, options).init() 
-        //await socialProtocol.prepareWallet()
-
-        let user: User | null = await socialProtocol.getUserByPublicKey(new PublicKey(resp.publicKey.toString())) 
-
-        if(user == null){
-            const user2: User | null = await socialProtocol.createUser(this.username, imgFile, this.description) 
-            console.log(user2, ' ************************')
-        }else{
-            console.log(user, ' YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
-        }
-        console.log('???????????????????????????????????????????')
-        //console.log(user, ' ***************************************')
-        
+      this.wallet$.pipe(first()).subscribe((res:any) => {
+        resolve(res.adapter['_wallet']);
+      });
+    })
   }
+
 }
+
+
