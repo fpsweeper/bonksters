@@ -12,22 +12,32 @@ import { ProfileComponent } from './profile/profile.component';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { HomeModule } from './home/home.module';
 import { LoginComponent } from './login/login.component';
 import { ShopComponent } from './shop/shop.component';
 import { SoftwareComponent } from './software/software.component';
-import { environment as env } from '../environments/environment';
-
-import { AuthHttpInterceptor, AuthModule } from '@auth0/auth0-angular';
 import { Navbar2Component } from './shared/navbar2/navbar2.component';
 import { SolWalletsModule } from 'angular-sol-wallets';
 import { ProjectModalComponent } from './project-modal/project-modal.component';
 import { DeleteModalComponent } from './delete-modal/delete-modal.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { CustomSnackComponent } from './custom-snack/custom-snack.component';
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { HdWalletAdapterModule } from '@heavy-duty/wallet-adapter';
+import { HdWalletAdapterMaterialModule } from '@heavy-duty/wallet-adapter-material';
+
+
 
 @NgModule({
   declarations: [
@@ -50,17 +60,22 @@ import { CustomSnackComponent } from './custom-snack/custom-snack.component';
     SolWalletsModule,
     BrowserModule,
     NgbModule,
-    FormsModule,
     RouterModule,
     AppRoutingModule,
     HomeModule,
-    AuthModule.forRoot({
-      ...env.auth,
-      httpInterceptor: {
-        ...env.httpInterceptor,
-      },
-    }),
-    BrowserAnimationsModule
+    FormsModule,
+    //BrowserAnimationsModule,
+
+    BrowserModule,
+    ReactiveFormsModule,
+    ClipboardModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    HdWalletAdapterModule.forRoot({ autoConnect: true }),
+    HdWalletAdapterMaterialModule,
   ],
   /*providers: [
     {

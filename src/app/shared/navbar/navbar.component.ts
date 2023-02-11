@@ -6,7 +6,6 @@ const { rpc } = require ('../../../config.json')
 import { SolWalletsService, Wallet } from "angular-sol-wallets" ;
 import {PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import {  SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
-import {ProtocolOptions, SocialProtocol, User} from '@spling/social-protocol'
 
 declare global {
     interface Window {
@@ -198,39 +197,15 @@ export class NavbarComponent implements OnInit {
           }
 
         }else{
-            if ('solflare' in window || 'solana' in window) {
+            /*if ('solflare' in window || 'solana' in window) {
                 const provider = window.solflare;
                 if (provider.isSolflare) {
                     return provider;
                 }
-            }
+            }*/
         }
       
         window.open('https://phantom.app/', '_blank');
     };
 
-    async createUser(){
-        const options = {
-            rpcUrl: rpc,
-            useIndexer: true
-        } as ProtocolOptions
-            const prov = this.getProvider()
-            const resp = await prov.connect();
-            console.log(prov, ' ;;;;;;;;;;;;;;;;;;;;;')
-            const socialProtocol: SocialProtocol = await new SocialProtocol(prov, null, options).init() 
-            //await socialProtocol.prepareWallet()
-
-            let user: User | null = await socialProtocol.getUserByPublicKey(new PublicKey(resp.publicKey.toString())) 
-
-            if(user == null){
-                console.log('???????????????????????????????? !!!!!!!')
-                const user2: User | null = await socialProtocol.createUser("FpSweeper", null, null) 
-                console.log(user2, ' ************************')
-            }else{
-                console.log(user, ' YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
-            }
-            console.log('???????????????????????????????????????????')
-            //console.log(user, ' ***************************************')
-            
-    }
 }
