@@ -19,6 +19,8 @@ import {
 } from '@solana/wallet-adapter-wallets';
 import { ConnectionStore, WalletStore } from '@heavy-duty/wallet-adapter';
 
+import { SocialProtocol, ProtocolOptions, User } from "@spling/social-protocol";
+
 declare global {
   interface Window {
       phantom:any,
@@ -216,7 +218,7 @@ export class ProfileComponent implements OnInit {
       this.openSnackBar2()
     else{
       this.createLoading = true
-      console.log('Creating user ...')
+      this.createUser2()
       this.createLoading = false
     }
   }
@@ -246,8 +248,10 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  /*async createUser2(){
-    await this.solWalletS.connect().then( async wallet => {
+  async createUser2(){
+
+    this.getWalletFromObservable().then(async (wallet:any) => {
+
       console.log("Wallet connected successfully with this address:", wallet.publicKey);
 
       let imgFile = {
@@ -274,12 +278,9 @@ export class ProfileComponent implements OnInit {
               console.log(user, ' YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
           }
 
-    }).catch(err => {
-      console.log("Error connecting wallet", err );
     })
-
     
-  }*/
+  }
 
   getWalletFromObservable() {
     return new Promise(resolve=>{
